@@ -1,26 +1,55 @@
-import { Profile } from './Profile/Profile';
-import { Statistics } from './Statistics/Statistics';
-import { FriendList } from './FriendList/FriendList';
-import { TransactionHistory } from './TransactionHistory/TransactionHistory';
-import user from '../data/user.json';
-import data from '../data/data.json';
-import friends from '../data/friends.json';
-import transactions from '../data/transactions.json';
+import { Component } from "react";
+import FeedbackOptions from "./FeedbackOptions";
+import Statistics from "./Statistics";
+import Section from "./Section";
 
-export const App = () => {
-  return (
-    <>
-      <Profile
-        username={user.username}
-        tag={user.tag}
-        location={user.location}
-        avatar={user.avatar}
-        stats={user.stats}
-      />
-      <Statistics title="Upload stats" stats={data} />
-      <Statistics stats={data} />
-      <FriendList friends={friends} />
-      <TransactionHistory items={transactions} />
-    </>
-  );
-};
+class App extends Component {
+    state = {
+        good: 0,
+        neutral: 0,
+        bad: 0,
+    };
+
+    onLeaveFeedback = event => {
+        const stateName = event.target.name;
+        this.setState(prevState => ({
+            [stateName]: prevState[stateName] + 1,
+        }));
+    };
+
+    countTotalFeedback = () => {
+        return this.state.good + this.state.neutral + this.state.bad;
+    };
+
+    countPositiveFeedbackPercentage = () => {
+        const totalFeedback = this.countTotalFeedback();
+        return ((this.state.good / totalFeedback) * 100);
+    };
+
+    render() {
+        const { good, neutral, bad } = this.state;
+        const options = Object.keys(this.state);
+        const total = this.countTotalFeedback();
+        const positivePercentage = this.countPositiveFeedbackPercentage();
+        return (
+            <>
+                <Section title="Please leave feedback">
+                    <FeedbackOptions
+                        options={options}
+                        onLeaveFeedback={this.onLeaveFeedback}
+                    />
+                </Section>
+                <Section title="Statistics">
+                    <Statistics
+                        good={good}
+                        neutral={neutral}
+                        bad={bad}
+                        total={total}
+                        positivePercentage={positivePercentage}
+                    />
+                </Section>
+            </>
+        );
+    }
+}
+export default App;
