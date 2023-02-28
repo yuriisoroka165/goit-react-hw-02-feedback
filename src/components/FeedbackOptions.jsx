@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import shortid from "shortid";
 import css from "./FeedbackApp.module.css";
 
 const FeedbackOptions = ({ options, onLeaveFeedback }) => {
@@ -6,7 +7,7 @@ const FeedbackOptions = ({ options, onLeaveFeedback }) => {
         <div className={css.feedback__buttons_container}>
             {options.map((option) => (
                 <button
-                    key={option} //знаю що індекси як ключі цн погана практика, тому як ключ використовую сам елемент масиву
+                    key={shortid.generate()}
                     className={css.feedback__button}
                     onClick={onLeaveFeedback}
                     name={option}
